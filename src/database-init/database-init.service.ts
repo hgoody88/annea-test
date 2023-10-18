@@ -13,15 +13,6 @@ export class DatabaseInitialisationService implements OnModuleInit {
   }
 
   private async runMigrations(queryRunner: QueryRunner) {
-    const queryRows: { count: string }[] = await queryRunner.query(
-      'SELECT COUNT(*) FROM turbine;',
-    )
-    const rowCount = queryRows[0].count
-    if (rowCount !== '0') {
-      console.log(`Table already populated with ${rowCount} rows.`)
-      return
-    }
-
     try {
       // Create the TimescaleDB extension
       await queryRunner.query('CREATE EXTENSION IF NOT EXISTS timescaledb;')
@@ -36,8 +27,15 @@ export class DatabaseInitialisationService implements OnModuleInit {
                 );
             `)
 
-      // TODO: sort in dockerfile
-      const csvFilePath = resolve(__dirname, 'example_indicator.csv') // Adjust the path as needed
+      const queryRows: { count: string }[] = await queryRunner.query(
+        'SELECT COUNT(*) FROM turbine;',
+      )
+      const rowCount = queryRows[0].count
+      if (rowCount !== '0') {
+        console.log(`Table already populated with ${rowCount} rows.`)
+        return
+      }
+
       const maybePath = join(process.cwd(), 'example_indicator.csv')
 
       // Read and execute the CSV data import
@@ -49,13 +47,7 @@ export class DatabaseInitialisationService implements OnModuleInit {
     } catch (error) {
       console.log('errored')
       console.log(error)
-      await queryRunner.rollbackTransaction()
       throw error
-    } finally {
-      console.log('finally')
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.release()
-      }
     }
   }
 }

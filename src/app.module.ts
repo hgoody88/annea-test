@@ -9,11 +9,11 @@ import { DatabaseInitModule } from './database-init/database-init.module'
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      host: 'q5d0mkr989.a5o026nr1p.tsdb.cloud.timescale.com', // 'localhost',
+      port: 33775, // 5432,
+      username: 'tsdbadmin', // 'postgres',
+      password: 'egcovkqkyxd27ml0', // 'postgres',
+      database: 'tsdb',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
       installExtensions: true,

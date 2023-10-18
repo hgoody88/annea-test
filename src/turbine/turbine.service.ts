@@ -5,7 +5,7 @@ import { Turbine } from './entities/turbine.entity'
 import { Between, DeleteResult, Repository } from 'typeorm'
 import { TurbineAveragesDto } from './dto/turbine-averages.dto'
 import { HourlyBucketsDto } from './dto/hourly-buckets.dto'
-import { plainToClass, plainToInstance } from 'class-transformer'
+import { plainToInstance } from 'class-transformer'
 
 interface averageTurbineInfo {
   turbine_turbine_id: number
@@ -30,9 +30,6 @@ export class TurbineService {
     return await this.turbineRepository.save(turbine)
   }
 
-  // TODO: test start == end (controller)
-  //       test start > end
-  //       test start < end
   async getAllTurbinesInDateRange(start: Date, end: Date) {
     return await this.turbineRepository.findBy({
       time: Between(start, end),
